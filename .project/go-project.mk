@@ -64,6 +64,9 @@ PROD_VERSION := $(shell cat .VERSION)
 GIT_VERSION := $(shell printf %s-%d%s ${PROD_VERSION} ${COMMITS_COUNT} ${GIT_DIRTY})
 COVPATH=.coverage
 
+# List of all .go files in the project, excluding vendor and .tools
+GOFILES_NOVENDOR = $(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -path "./.tools/*" -not -path "./.gopath/*")
+
 export PROJ_DIR=$(PROJ_ROOT)
 export PROJ_BIN=$(PROJ_ROOT)/bin
 export VENDOR_SRC=$(PROJ_ROOT)/vendor
@@ -94,10 +97,19 @@ TEST_DIR := "${PROJ_REPO_TARGET}"
 # List of all .go files in the project, exluding vendor and tools
 PROJ_GOFILES = $(shell find . -type f -name '*.go' -not -path "./vendor/*" -not -path "./.gopath/*" -not -path "./.tools/*")
 
+COVERAGE_EXCLUSIONS="/rt\.go|/bindata\.go"
+
 # flags
 INTEGRATION_TAG="integration"
 TEST_RACEFLAG ?=
 TEST_GORACEOPTIONS ?=
+
+# flag to enable golang race detector. Usage: make $(test_target) RACE=true. For example, make test RACE=true
+RACE ?=
+ifeq ($(RACE),true)
+	TEST_GORACEOPTIONS = "log_path=${PROJROOT}/${COVPATH}/race/report"
+	TEST_RACEFLAG = -race
+endif
 
 # SSH clones over the VPN get killed by some kind of DOS protection run amook
 # set clone_delay to add a delay between each git clone/fetch to work around that
@@ -190,7 +202,7 @@ list:
 # print environment variables
 #
 vars:
-	[ -d "${PROJ_REPO_TARGET}" ] && echo "Symbolic link exists: ${PROJ_REPO_TARGET}" || echo "Symbolic link does not exist: ${PROJ_REPO_TARGET}"
+	[ -d "${PROJ_REPO_TARGET}" ] && echo "Repo target exists: ${PROJ_REPO_TARGET}" || echo "Symbolic link does not exist: ${PROJ_REPO_TARGET}"
 	echo "PROJ_DIR=$(PROJ_DIR)"
 	echo "GOROOT=$(GOROOT)"
 	echo "GOPATH=$(GOPATH)"
@@ -228,7 +240,7 @@ gopath:
 		mkdir -p "${PROJ_GOPATH_DIR}/src/${ORG_NAME}" && \
 		ln -s ../../../.. "${PROJ_REPO_TARGET}" && \
 		echo "Created symbolic link: ${PROJ_REPO_TARGET}" || \
-	echo "Link already exists: ${PROJ_REPO_TARGET}"
+	echo "Repo target exists: ${PROJ_REPO_TARGET}"
 
 #
 # show updates in Tools and vendor folder.
@@ -261,11 +273,23 @@ testenv:
 bench:
 	GOPATH=${TEST_GOPATH} go test  ${TEST_RACEFLAG} -bench . ${PROJ_PACKAGE}/...
 
+generate:
+	PATH=${TOOLS_BIN}:${PATH} go generate ./...
+
 fmt:
 	echo "Running Fmt"
 	gofmt -s -l -w ${GOFILES_NOVENDOR}
 
+vet: build
+	echo "Running vet"
+	cd ${TEST_DIR} && go vet ./...
+
+lint:
+	echo "Running lint"
+	cd ${TEST_DIR} && GOPATH=${TEST_GOPATH}  go list ./... | grep -v /vendor/ | xargs -L1 golint -set_exit_status
+
 test: fmt vet lint
+	echo "Running test"
 	cd ${TEST_DIR} && go test ${TEST_RACEFLAG} ./...
 
 testshort:
@@ -304,8 +328,11 @@ help:
 	echo "make gopath - create a symbolic link to project's PROJ_GOPATH, if it's not cloned in GOPATH."
 	echo "make showupdates - show updates in .tools and vendor folders"
 	echo "make lspkg - list GO packeges in the current project"
+	echo "make generate - generate GO files"
 	echo "make bench - GO test with bench"
 	echo "make fmt - run go fmt on project files"
+	echo "make vet - run go vet on project files"
+	echo "make lint - run go lint on project files"
 	echo "make test - run test"
 	echo "make testshort - run test with -short flag"
 	echo "make covtest - run test with coverage report"

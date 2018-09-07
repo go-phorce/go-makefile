@@ -25,6 +25,7 @@ Makefile helpers for GO.
 
 - `make vars` - print make variables
 - `make env` - pring GO environment
+- `make generate` - generate GO files
 - `make testenv` - pring GO test environment
 - `make clean` - clean produced files
 - `make purge` - clean and purge `.tools` and `vendor` folders
@@ -33,6 +34,8 @@ Makefile helpers for GO.
 - `make lspkg` - list GO packeges in the current project
 - `make bench` - GO test with bench
 - `make fmt` - run `go fmt` on project files
+- `make vet` - run `go vet` on project files
+- `make lint` - run `go lint` on project files
 - `make test` - run test
 - `make testshort` - run test with -short flag
 - `make covtest` - run test with coverage report
