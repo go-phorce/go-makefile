@@ -107,7 +107,7 @@ TEST_GORACEOPTIONS ?=
 # flag to enable golang race detector. Usage: make $(test_target) RACE=true. For example, make test RACE=true
 RACE ?=
 ifeq ($(RACE),true)
-	TEST_GORACEOPTIONS = "log_path=${PROJROOT}/${COVPATH}/race/report"
+	TEST_GORACEOPTIONS = "log_path=${PROJ_DIR}/${COVPATH}/race/report"
 	TEST_RACEFLAG = -race
 endif
 
