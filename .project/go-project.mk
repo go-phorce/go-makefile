@@ -11,7 +11,7 @@ SHELL=/bin/bash
 #
 # 	ORG_NAME
 #		Git organization name, for example: github.com/go-phorce
-#	
+#
 #	PROJ_NAME
 #		Git project name, for example: go-makefile
 #
@@ -319,8 +319,12 @@ citest: vet lint
 	cov-report -fmt xml -o ${COVPATH}/coverage.xml -ex ${COVERAGE_EXCLUSIONS} -cc ${COVPATH}/combined.out ${COVPATH}/cc*.out
 	cov-report -fmt ds -o ${COVPATH}/summary.xml -ex ${COVERAGE_EXCLUSIONS} ${COVPATH}/cc*.out
 
+coveralls: covtest
+	goveralls -service=travis-ci
+
 help:
 	echo "make vars - print make variables"
+	echo "make upgrade-project.mk - upgrade project.mk files"
 	echo "make env - pring GO environment"
 	echo "make testenv - pring GO test environment"
 	echo "make clean - clean produced files"
@@ -337,3 +341,34 @@ help:
 	echo "make testshort - run test with -short flag"
 	echo "make covtest - run test with coverage report"
 	echo "make coverage - open coverage report"
+	echo "make coveralls - publish coverage to coveralls"
+	echo "make devtools - install dev tools"
+
+getdevtools:
+	$(call gitclone,${GITHUB_HOST},golang/tools,           ${GOPATH}/src/golang.org/x/tools,                  release-branch.go1.10)
+	$(call gitclone,${GITHUB_HOST},derekparker/delve,      ${GOPATH}/src/github.com/derekparker/delve,        master)
+	$(call gitclone,${GITHUB_HOST},uudashr/gopkgs,         ${GOPATH}/src/github.com/uudashr/gopkgs,           master)
+	$(call gitclone,${GITHUB_HOST},nsf/gocode,             ${GOPATH}/src/github.com/nsf/gocode,               master)
+	$(call gitclone,${GITHUB_HOST},rogpeppe/godef,         ${GOPATH}/src/github.com/rogpeppe/godef,           master)
+	$(call gitclone,${GITHUB_HOST},acroca/go-symbols,      ${GOPATH}/src/github.com/acroca/go-symbols,        master)
+	$(call gitclone,${GITHUB_HOST},ramya-rao-a/go-outline, ${GOPATH}/src/github.com/ramya-rao-a/go-outline,   master)
+	$(call gitclone,${GITHUB_HOST},ddollar/foreman,        ${GOPATH}/src/github.com/ddollar/foreman,          master)
+	$(call gitclone,${GITHUB_HOST},sqs/goreturns,          ${GOPATH}/src/github.com/sqs/goreturns,            master)
+	$(call gitclone,${GITHUB_HOST},karrick/godirwalk,      ${GOPATH}/src/github.com/karrick/godirwalk,        master)
+	$(call gitclone,${GITHUB_HOST},pkg/errors,             ${GOPATH}/src/github.com/pkg/errors,               master)
+
+devtools: getdevtools
+	go install golang.org/x/tools/go/buildutil
+	go install golang.org/x/tools/cmd/fiximports
+	go install golang.org/x/tools/cmd/goimports
+	go install github.com/derekparker/delve/cmd/dlv
+	go install github.com/uudashr/gopkgs/cmd/gopkgs
+	go install github.com/nsf/gocode
+	go install github.com/rogpeppe/godef
+	go install github.com/acroca/go-symbols
+	go install github.com/ramya-rao-a/go-outline
+	go install github.com/sqs/goreturns
+
+upgrade-project.mk:
+	wget -O vscode.sh https://raw.githubusercontent.com/go-phorce/go-makefile/master/vscode.sh
+	wget -O .project/go-project.mk https://raw.githubusercontent.com/go-phorce/go-makefile/master/.project/go-project.mk

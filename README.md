@@ -24,6 +24,7 @@ Makefile helpers for GO.
 ## Common commands
 
 - `make vars` - print make variables
+- `make upgrade-project.mk` - upgrade project.mk files"
 - `make env` - pring GO environment
 - `make generate` - generate GO files
 - `make testenv` - pring GO test environment
@@ -40,6 +41,8 @@ Makefile helpers for GO.
 - `make testshort` - run test with -short flag
 - `make covtest` - run test with coverage report
 - `make coverage` - open coverage report
+- `make coveralls` - publish coverage to coveralls"
+- `make devtools` - install dev tools"
 
 ## Coverage report
 
