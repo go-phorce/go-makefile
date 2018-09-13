@@ -20,7 +20,7 @@ if [ -z "${ORG_NAME##*/*}" ] ;then
     #echo "'$ORG_NAME' contains: '/'."
     REL_PATH_TO_GOPATH=../../../..
 else
-    #echo "'$ORG_NAME' don't contain: '/'."
+    #echo "'$ORG_NAME' does not contain: '/'."
     REL_PATH_TO_GOPATH=../../..
 fi
 
