@@ -51,7 +51,7 @@ ORG_NAME := $(shell .project/config_var.sh project_org)
 PROJ_NAME := $(shell .project/config_var.sh project_name)
 REPO_NAME := ${ORG_NAME}/${PROJ_NAME}
 PROJ_PACKAGE := ${REPO_NAME}
-REL_PATH_TO_GOPATH := $(shell [ -z "${ORG_NAME}\#\#*/*" ] && echo "../../.." || echo "../../../..")
+REL_PATH_TO_GOPATH := $(shell .project/rel_gopath.sh)
 
 ## Common variables
 HOSTNAME := $(shell echo $$HOSTNAME)
