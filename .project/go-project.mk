@@ -51,7 +51,7 @@ ORG_NAME := $(shell .project/config_var.sh project_org)
 PROJ_NAME := $(shell .project/config_var.sh project_name)
 REPO_NAME := ${ORG_NAME}/${PROJ_NAME}
 PROJ_PACKAGE := ${REPO_NAME}
-REL_PATH_TO_GOPATH := $(shell if [ -z "${ORG_NAME\#\#*/*}" ]; then echo "../../../.."; else echo "../../.."; fi)
+REL_PATH_TO_GOPATH := $(shell [ -z "${ORG_NAME}\#\#*/*" ] && echo "../../.." || echo "../../../..")
 
 ## Common variables
 HOSTNAME := $(shell echo $$HOSTNAME)
@@ -223,7 +223,7 @@ vars:
 	echo "PROJ_REPO_TARGET=$(PROJ_REPO_TARGET)"
 	echo "GOROOT=$(GOROOT)"
 	echo "GOPATH=$(GOPATH)"
-	echo "REL_PATH_TO_GOPATH=${REL_PATH_TO_GOPATH}"
+	echo "PROJ_REPO_TARGET=$(PROJ_REPO_TARGET)"
 	echo "PROJ_PACKAGE=$(PROJ_PACKAGE)"
 	echo "PROJ_GOPATH=$(PROJ_GOPATH)"
 	echo "TOOLS_PATH=$(TOOLS_PATH)"
@@ -257,8 +257,8 @@ gopath:
 		rm -f "${PROJ_REPO_TARGET}" && \
 		mkdir -p "${PROJ_GOPATH_DIR}/src/${ORG_NAME}" && \
 		ln -s ${REL_PATH_TO_GOPATH} "${PROJ_REPO_TARGET}" && \
-		echo "Created symbolic link: ${PROJ_REPO_TARGET}" || \
-	echo "Repo target exists: ${PROJ_REPO_TARGET}"
+		echo "Created symbolic link: ${PROJ_REPO_TARGET} => ${REL_PATH_TO_GOPATH}" || \
+	echo "Repo target exists: ${PROJ_REPO_TARGET} => ${REL_PATH_TO_GOPATH}"
 
 #
 # show updates in Tools and vendor folder.
