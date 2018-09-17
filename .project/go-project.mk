@@ -374,7 +374,7 @@ help:
 	echo "make devtools - install dev tools"
 
 getdevtools:
-	$(call httpsclone,${GITHUB_HOST},golang/tools,           ${GOPATH}/src/golang.org/x/tools,                  release-branch.go1.10)
+	$(call httpsclone,${GITHUB_HOST},golang/tools,           ${GOPATH}/src/golang.org/x/tools,                  release-branch.go1.11)
 	$(call httpsclone,${GITHUB_HOST},derekparker/delve,      ${GOPATH}/src/github.com/derekparker/delve,        master)
 	$(call httpsclone,${GITHUB_HOST},uudashr/gopkgs,         ${GOPATH}/src/github.com/uudashr/gopkgs,           master)
 	$(call httpsclone,${GITHUB_HOST},nsf/gocode,             ${GOPATH}/src/github.com/nsf/gocode,               master)
@@ -401,3 +401,4 @@ devtools: getdevtools
 upgrade-project.mk:
 	wget -O vscode.sh https://raw.githubusercontent.com/go-phorce/go-makefile/master/vscode.sh
 	wget -O .project/go-project.mk https://raw.githubusercontent.com/go-phorce/go-makefile/master/.project/go-project.mk
+	wget -O .project/config-softhsm.sh https://raw.githubusercontent.com/go-phorce/go-makefile/master/.project/config-softhsm.sh
