@@ -65,7 +65,7 @@ GIT_HASH := $(shell git rev-parse --short HEAD)
 COMMITS_COUNT := $(shell git rev-list --count ${GIT_HASH})
 #
 PROD_VERSION := $(shell cat .VERSION)
-GIT_VERSION := $(shell printf %s-%d%s ${PROD_VERSION} ${COMMITS_COUNT} ${GIT_DIRTY})
+GIT_VERSION := $(shell printf %s.%d%s ${PROD_VERSION} ${COMMITS_COUNT} ${GIT_DIRTY})
 COVPATH=.coverage
 
 # List of all .go files in the project, excluding vendor and .tools
