@@ -1,0 +1,15 @@
+/.gopath
+/.coverage
+/.rpm
+/.tools
+
+coverage.out
+pkg/
+bin/
+.idea
+.tmp/
+.docker/
+.DS_Store
+
+debug
+debug.test
