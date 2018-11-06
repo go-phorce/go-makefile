@@ -163,7 +163,7 @@ endef
 
 define gitclonenewonly
 	@echo "Checking dependency git@$(1):$(2).git"
-	@if [ ! -d $(3) ]; then git clone -q -n git@$(1):$(2).git $(3); fi  # clone a new copy
+	@if [ ! -d $(3) ]; then git clone -q -n git@$(1):$(2).git $(3) && cd $(3) && git checkout -q $(4); fi  # clone a new copy
 	@sleep ${CLONE_DELAY}
 endef
 
