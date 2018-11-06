@@ -131,6 +131,12 @@ define show_dep_updates
 	find $(1) -name .git -exec sh -c 'cd {}/.. && [ $$(git log --oneline HEAD...origin/master | wc -l) -gt 0 ] && echo "\n" && pwd && git --no-pager log --pretty=oneline --abbrev=0 --graph HEAD...origin/master' \;
 endef
 
+# add url.insteadOf to fix GHE
+define ssh_insteadOf
+	@echo "git config --global url.ssh://git@$(1).git.insteadOf $(2)"
+	@git config --global url.ssh://git@$(1).git.insteadOf $(2)
+endef
+
 # httpsclone is a function that will do a clone, or a fetch / checkout [if we'd previous done a clone]
 # usage, $(call httpsclone,github.com,ekspand/foo,/some/directory,some_sha)
 # it builds a repo url from the first 2 params, the 3rd param is the directory to place the repo
@@ -152,6 +158,12 @@ define gitclone
 	@if [ -d $(3) ]; then cd $(3) && git fetch origin; fi			# update from remote if we've already cloned it
 	@if [ ! -d $(3) ]; then git clone -q -n git@$(1):$(2).git $(3); fi  # clone a new copy
 	@cd $(3) && git checkout -q $(4)								# checkout out specific commit
+	@sleep ${CLONE_DELAY}
+endef
+
+define gitclonenewonly
+	@echo "Checking dependency git@$(1):$(2).git"
+	@if [ ! -d $(3) ]; then git clone -q -n git@$(1):$(2).git $(3); fi  # clone a new copy
 	@sleep ${CLONE_DELAY}
 endef
 
