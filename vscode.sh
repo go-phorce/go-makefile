@@ -12,6 +12,7 @@ ORG_NAME=$project_org
 PROJ_NAME=$project_name
 REPO_NAME=$ORG_NAME/$PROJ_NAME
 export PROJ_GOPATH=/tmp/gopath/$PROJ_NAME
+export GOPATH=/tmp/gopath/$PROJ_NAME
 
 make gopath
 
