@@ -11,10 +11,9 @@ create_variables ./config.yml
 ORG_NAME=$project_org
 PROJ_NAME=$project_name
 REPO_NAME=$ORG_NAME/$PROJ_NAME
-export PROJ_GOPATH=/tmp/gopath/$PROJ_NAME
 export GOPATH=/tmp/gopath/$PROJ_NAME
 
 make gopath
 
-echo "Working in $PROJ_GOPATH/src/$REPO_NAME"
-code "$PROJ_GOPATH/src/$REPO_NAME" & make devtools
+echo "Working in $GOPATH/src/$REPO_NAME"
+code "$GOPATH/src/$REPO_NAME" & make devtools
