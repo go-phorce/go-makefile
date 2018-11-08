@@ -3,7 +3,6 @@
 
 ROOT=`pwd`
 GOROOT=`go env GOROOT`
-echo "Working in $ROOT"
 
 # include parse_yaml function
 source .project/yaml.sh
@@ -15,4 +14,6 @@ REPO_NAME=$ORG_NAME/$PROJ_NAME
 export PROJ_GOPATH=/tmp/gopath/$PROJ_NAME
 
 make gopath
+
+echo "Working in $PROJ_GOPATH/src/$REPO_NAME"
 code "$PROJ_GOPATH/src/$REPO_NAME" & make devtools
