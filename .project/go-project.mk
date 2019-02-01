@@ -387,7 +387,7 @@ help:
 getdevtools:
 	$(call httpsclone,${GITHUB_HOST},golang/tools,           ${TOOLS_PATH}/src/golang.org/x/tools,                  release-branch.go1.11)
 	$(call httpsclone,${GITHUB_HOST},golang/dep,             ${TOOLS_PATH}/src/github.com/golang/dep,               master)
-	$(call httpsclone,${GITHUB_HOST},derekparker/delve,      ${TOOLS_PATH}/src/github.com/derekparker/delve,        master)
+	$(call httpsclone,${GITHUB_HOST},go-delve/delve,         ${TOOLS_PATH}/src/github.com/go-delve/delve,           master)
 	$(call httpsclone,${GITHUB_HOST},uudashr/gopkgs,         ${TOOLS_PATH}/src/github.com/uudashr/gopkgs,           master)
 	$(call httpsclone,${GITHUB_HOST},nsf/gocode,             ${TOOLS_PATH}/src/github.com/nsf/gocode,               master)
 	$(call httpsclone,${GITHUB_HOST},rogpeppe/godef,         ${TOOLS_PATH}/src/github.com/rogpeppe/godef,           master)
@@ -407,7 +407,7 @@ devtools: getdevtools
 	GOPATH=${TOOLS_PATH} go install golang.org/x/tools/cmd/guru
 	GOPATH=${TOOLS_PATH} go install golang.org/x/tools/cmd/gorename
 	GOPATH=${TOOLS_PATH} go install github.com/golang/dep/cmd/dep
-	GOPATH=${TOOLS_PATH} go install github.com/derekparker/delve/cmd/dlv
+	GOPATH=${TOOLS_PATH} go install github.com/go-delve/delve/cmd/dlv
 	GOPATH=${TOOLS_PATH} go install github.com/uudashr/gopkgs/cmd/gopkgs
 	GOPATH=${TOOLS_PATH} go install github.com/nsf/gocode
 	GOPATH=${TOOLS_PATH} go install github.com/rogpeppe/godef
