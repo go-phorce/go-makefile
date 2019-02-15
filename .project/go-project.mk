@@ -386,6 +386,7 @@ help:
 
 getdevtools:
 	$(call httpsclone,${GITHUB_HOST},golang/tools,           ${TOOLS_PATH}/src/golang.org/x/tools,                  release-branch.go1.11)
+	$(call httpsclone,${GITHUB_HOST},golang/net,             ${TOOLS_PATH}/src/golang.org/x/net,                    release-branch.go1.11)
 	$(call httpsclone,${GITHUB_HOST},golang/dep,             ${TOOLS_PATH}/src/github.com/golang/dep,               master)
 	$(call httpsclone,${GITHUB_HOST},go-delve/delve,         ${TOOLS_PATH}/src/github.com/go-delve/delve,           master)
 	$(call httpsclone,${GITHUB_HOST},uudashr/gopkgs,         ${TOOLS_PATH}/src/github.com/uudashr/gopkgs,           master)
