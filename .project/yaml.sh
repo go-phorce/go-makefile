@@ -1,20 +1,20 @@
 #!/bin/sh
 #!/bin/bash
-# 
+#
 # MIT License
-# 
+#
 # Copyright (c) 2017 Jonathan Peres
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
 # in the Software without restriction, including without limitation the rights
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,7 +25,12 @@
 #
 # https://github.com/jasperes/bash-yaml
 #
-function parse_yaml() {
+#!/usr/bin/env bash
+# shellcheck disable=SC1003
+
+# Based on https://gist.github.com/pkuczynski/8665367
+
+parse_yaml() {
     local yaml_file=$1
     local prefix=$2
     local s
@@ -37,10 +42,12 @@ function parse_yaml() {
     fs="$(echo @|tr @ '\034')"
 
     (
-        sed -ne '/^--/s|--||g; s|\"|\\\"|g; s/\s*$//g;' \
+        sed -e '/- [^\“]'"[^\']"'.*: /s|\([ ]*\)- \([[:space:]]*\)|\1-\'$'\n''  \1\2|g' |
+
+        sed -ne '/^--/s|--||g; s|\"|\\\"|g; s/[[:space:]]*$//g;' \
             -e "/#.*[\"\']/!s| #.*||g; /^#/s|#.*||g;" \
-            -e  "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
-            -e "s|^\($s\)\($w\)$s[:-]$s\(.*\)$s\$|\1$fs\2$fs\3|p" |
+            -e "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+            -e "s|^\($s\)\($w\)${s}[:-]$s\(.*\)$s\$|\1$fs\2$fs\3|p" |
 
         awk -F"$fs" '{
             indent = length($1)/2;
@@ -54,19 +61,20 @@ function parse_yaml() {
             }' |
 
         sed -e 's/_=/+=/g' |
-        awk 'BEGIN {
-                 FS="=";
-                 OFS="="
-             }
-             /(-|\.).*=/ {
-                 gsub("-|\\.", "_", $1)
-             }
-             { print }'
 
+        awk 'BEGIN {
+                FS="=";
+                OFS="="
+            }
+            /(-|\.).*=/ {
+                gsub("-|\\.", "_", $1)
+            }
+            { print }'
     ) < "$yaml_file"
 }
 
-function create_variables() {
+create_variables() {
     local yaml_file="$1"
-    eval "$(parse_yaml "$yaml_file")"
+    local prefix="$2"
+    eval "$(parse_yaml "$yaml_file" "$prefix")"
 }
