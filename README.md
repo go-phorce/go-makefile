@@ -42,7 +42,6 @@ Makefile helpers for GO.
 - `make covtest` - run test with coverage report
 - `make coverage` - open coverage report
 - `make coveralls` - publish coverage to coveralls"
-- `make devtools` - install dev tools"
 
 ## Coverage report
 

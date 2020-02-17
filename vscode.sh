@@ -44,7 +44,7 @@ export PATH=$PATH:$PROJ_GOPATH/bin:$PROJ_DIR/bin:$PROJ_DIR/.tools/bin:$GOROOT/bi
 env | grep GO
 popd
 
-code . & make devtools
+code .
 else
 #
 # Not in GOPATH format
@@ -61,5 +61,5 @@ export PATH=$PATH:$PROJ_ROOT/.tools/bin
 make gopath
 
 echo "Opening in $GOPATH/src/$REPO_NAME"
-code $GOPATH/src/$REPO_NAME & make devtools
+code $GOPATH/src/$REPO_NAME
 fi

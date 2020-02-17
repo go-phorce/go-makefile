@@ -382,40 +382,6 @@ help:
 	echo "make covtest - run test with coverage report"
 	echo "make coverage - open coverage report"
 	echo "make coveralls - publish coverage to coveralls"
-	echo "make devtools - install dev tools"
-
-getdevtools:
-	$(call httpsclone,${GITHUB_HOST},golang/tools,           ${TOOLS_PATH}/src/golang.org/x/tools,                  release-branch.go1.13)
-	$(call httpsclone,${GITHUB_HOST},golang/net,             ${TOOLS_PATH}/src/golang.org/x/net,                    release-branch.go1.13)
-	$(call httpsclone,${GITHUB_HOST},golang/dep,             ${TOOLS_PATH}/src/github.com/golang/dep,               master)
-	$(call httpsclone,${GITHUB_HOST},go-delve/delve,         ${TOOLS_PATH}/src/github.com/go-delve/delve,           master)
-	$(call httpsclone,${GITHUB_HOST},uudashr/gopkgs,         ${TOOLS_PATH}/src/github.com/uudashr/gopkgs,           master)
-	$(call httpsclone,${GITHUB_HOST},nsf/gocode,             ${TOOLS_PATH}/src/github.com/nsf/gocode,               master)
-	$(call httpsclone,${GITHUB_HOST},rogpeppe/godef,         ${TOOLS_PATH}/src/github.com/rogpeppe/godef,           master)
-	$(call httpsclone,${GITHUB_HOST},acroca/go-symbols,      ${TOOLS_PATH}/src/github.com/acroca/go-symbols,        master)
-	$(call httpsclone,${GITHUB_HOST},ramya-rao-a/go-outline, ${TOOLS_PATH}/src/github.com/ramya-rao-a/go-outline,   master)
-	$(call httpsclone,${GITHUB_HOST},ddollar/foreman,        ${TOOLS_PATH}/src/github.com/ddollar/foreman,          master)
-	$(call httpsclone,${GITHUB_HOST},sqs/goreturns,          ${TOOLS_PATH}/src/github.com/sqs/goreturns,            master)
-	$(call httpsclone,${GITHUB_HOST},karrick/godirwalk,      ${TOOLS_PATH}/src/github.com/karrick/godirwalk,        master)
-	$(call httpsclone,${GITHUB_HOST},pkg/errors,             ${TOOLS_PATH}/src/github.com/pkg/errors,               master)
-	$(call httpsclone,${GITHUB_HOST},jteeuwen/go-bindata,    ${TOOLS_PATH}/src/github.com/jteeuwen/go-bindata,      master)
-
-devtools: getdevtools
-	GOPATH="${TOOLS_PATH}" go install golang.org/x/tools/go/buildutil
-	GOPATH="${TOOLS_PATH}" go install golang.org/x/tools/cmd/fiximports
-	GOPATH="${TOOLS_PATH}" go install golang.org/x/tools/cmd/goimports
-	GOPATH="${TOOLS_PATH}" go install golang.org/x/tools/cmd/godoc
-	GOPATH="${TOOLS_PATH}" go install golang.org/x/tools/cmd/guru
-	GOPATH="${TOOLS_PATH}" go install golang.org/x/tools/cmd/gorename
-	GOPATH="${TOOLS_PATH}" go install github.com/golang/dep/cmd/dep
-	GOPATH="${TOOLS_PATH}" go install github.com/go-delve/delve/cmd/dlv
-	GOPATH="${TOOLS_PATH}" go install github.com/uudashr/gopkgs/cmd/gopkgs
-	GOPATH="${TOOLS_PATH}" go install github.com/nsf/gocode
-	GOPATH="${TOOLS_PATH}" go install github.com/rogpeppe/godef
-	GOPATH="${TOOLS_PATH}" go install github.com/acroca/go-symbols
-	GOPATH="${TOOLS_PATH}" go install github.com/ramya-rao-a/go-outline
-	GOPATH="${TOOLS_PATH}" go install github.com/sqs/goreturns
-	GOPATH="${TOOLS_PATH}" go install github.com/jteeuwen/go-bindata/...
 
 upgrade-project.mk:
 	wget -O .project/go-project.mk https://raw.githubusercontent.com/go-phorce/go-makefile/master/.project/go-project.mk
