@@ -256,8 +256,7 @@ clean:
 #
 purge: clean
 	rm -rf \
-		${TOOLS_PATH} \
-		${VENDOR_SRC}
+		${TOOLS_PATH}
 
 #
 # create a symbolic link to project's PROJ_GOPATH,

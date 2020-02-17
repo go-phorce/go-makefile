@@ -8,7 +8,8 @@
 #   --slot {slot}       - slot name
 #   --module {module}   - optional HSM module
 #   --tokens-dir        - folder to store softhsm tokens
-#   --out-cfg           - output file with configuration
+#   --cfg-dir           - folder to store softhsm2.conf
+#   --out-cfg           - output file with token configuration
 #
 
 POSITIONAL=()
@@ -42,6 +43,11 @@ case $key in
     shift # past argument
     shift # past value
     ;;
+    -c|--cfg-dir)
+    SOFTHSM2_CONF_DIR="$2"
+    shift # past argument
+    shift # past value
+    ;;
     -o|--out-cfg)
     CONFIG_FILE="$2"
     shift # past argument
@@ -71,6 +77,9 @@ case $key in
     POSITIONAL+=("$1") # save it in an array for later
     shift # past argument
     ;;
+    *)
+    echo "invalid flag $key: use --help to see the option"
+    exit 1
 esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
@@ -80,7 +89,7 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 PKCS11_TOOL=`which pkcs11-tool`
 SOFTHSM_TOOL=`which softhsm2-util`
 
-[ -z "$PKCS11_TOOL" ] && echo "Please install pkcs11-tool" && exit 1
+[ -z "$PKCS11_TOOL" ] && echo "Please install pkcs11-tool"
 [ -z "$SOFTHSM_TOOL" ] && echo "Please install softhsm2" && exit 1
 
 if [[ -z "$HSM_MODULE" ]]; then
@@ -122,6 +131,10 @@ if [[ -z "$TOKEN_DIR" ]]; then
     TOKEN_DIR=~/softhsm2/tokens
 fi
 
+if [[ -z "$SOFTHSM2_CONF_DIR" ]]; then
+    SOFTHSM2_CONF_DIR=~/.config/softhsm2
+fi
+
 if [[ -z "$HSM_PIN" && -f $HSM_PINFILE ]]; then
     HSM_PIN_VAL=`cat $HSM_PINFILE`
     HSM_PIN="file:${HSM_PINFILE}"
@@ -145,6 +158,7 @@ echo PKCS11_TOOL = "${PKCS11_TOOL}"
 echo SOFTHSM_TOOL= "${SOFTHSM_TOOL}"
 echo TOKEN_DIR   = "${TOKEN_DIR}"
 echo CONFIG_FILE = "${CONFIG_FILE}"
+echo SOFTHSM2_CONF_DIR = "${SOFTHSM2_CONF_DIR}"
 echo FORCE       = "${FORCE}"
 
 if [[ "$FORCE" == "YES" ]]; then
@@ -152,11 +166,10 @@ if [[ "$FORCE" == "YES" ]]; then
     rm -rf ${TOKEN_DIR}
 fi
 
-if [[ ! -f ~/.config/softhsm2/softhsm2.conf ]]; then
-    echo 'Creating ~/.config/softhsm2/softhsm2.conf'
-    mkdir -p ${TOKEN_DIR}
-    mkdir -p ~/.config/softhsm2
-    echo "directories.tokendir = $TOKEN_DIR" > ~/.config/softhsm2/softhsm2.conf
+if [[ ! -f ${SOFTHSM2_CONF_DIR}/softhsm2.conf ]]; then
+    echo "Creating $SOFTHSM2_CONF_DIR/softhsm2.conf"
+    mkdir -p ${TOKEN_DIR} ${SOFTHSM2_CONF_DIR}
+    echo "directories.tokendir = $TOKEN_DIR" > ${SOFTHSM2_CONF_DIR}/softhsm2.conf
 fi
 
 if [[ "$DELETE_TOKEN" == "YES" ]]; then
@@ -172,12 +185,12 @@ softhsm2-util --show-slots | grep -q "${HSM_SLOT}" || softhsm2-util --init-token
 echo "HSM_PIN_VAL=${HSM_PIN_VAL}"
 cat $CONFIG_FILE
 
-if [[ "$LIST_SLOTS" == "YES" ]]; then
+if [[ "$LIST_SLOTS" == "YES" && "$PKCS11_TOOL" != "" ]]; then
     echo "*** Slots:"
     pkcs11-tool --module "$HSM_MODULE" --list-slots
     #softhsm2-util --show-slots
 fi
-if [[ "$LIST_OBJECTS" == "YES" ]]; then
+if [[ "$LIST_OBJECTS" == "YES" && "$PKCS11_TOOL" != "" ]]; then
     echo "*** Objects:"
     pkcs11-tool --module "$HSM_MODULE" --login --pin $HSM_PIN_VAL --token-label "${HSM_SLOT}" --list-object
 fi
