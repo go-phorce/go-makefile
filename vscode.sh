@@ -1,5 +1,6 @@
 #!/bin/bash
 # this script creates PROJ_GOPATH folder for the project in GOPATH
+# to be used with GoLang without `go mod`
 
 PROJ_ROOT=`pwd`
 GOROOT=`go env GOROOT`
@@ -13,6 +14,8 @@ ORG_NAME=$project_org
 PROJ_NAME=$project_name
 REPO_NAME=$ORG_NAME/$PROJ_NAME
 REL_PATH_TO_GOPATH=../../../..
+
+export GO111MODULE=off
 
 echo "Repo: $REPO_NAME"
 
